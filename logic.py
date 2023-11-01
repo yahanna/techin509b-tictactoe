@@ -1,102 +1,46 @@
-# This file is where game logic lives. No input
-# or output happens here. The logic in this file
-# should be unit-testable.
+def get_new_board():
+    return [
+        [None, None, None],
+        [None, None, None],
+        [None, None, None],
+    ]
 
-def check_winner_pytho1nic(board):
-    # check rows
-    #    ['X', 'X', 'X'], -> set(['X', 'X', 'X']) -> {'X'}
-    #    ['O', 'X', 'O'], -> set(['O', 'X', 'O']) -> {'X', 'O'}
-    #    ['O', 'O', 'X'],
+def check_winner(board):
+    """
+    1. Check each row
+    2. Check each column
+    3. Check left to right diagonal
+    4. Check right to left diagonal
+    5. Return draw if board is full
+    6. Game is not finished
+    """
+
+    board_length = len(board)
+
     for row in board:
         if len(set(row)) == 1:
             return row[0]
-
-    # check columns
-    #    ['X', 'X', 'X'],
-    #    ['O', 'X', 'O'],
-    #    ['O', 'O', 'X'],
-    # how to index -> board[row][column]
-    # column_idxs = [[0,0], [1,0], [2,0]]
-    # column_idxs = [[0,1], [1,1], [2,1]]
-    for i in range(len(board)):
-        # len(board) -> 3
-        column = [board[j][i] for j in range(len(board))]
-        # column => ['X', 'O', 'O']
-        # column => ['X', 'X', 'O]
+    
+    for col_idx in range(board_length):
+        column = [board[row_idx][col_idx] for row_idx in range(board_length)]
         if len(set(column)) == 1:
-            return board[0][i]
+            return column[0]
+    
+    left_to_right_diag = []
+    for idx, row in enumerate(board):
+        left_to_right_diag.append(row[idx])
+    if len(set(left_to_right_diag)) == 1:
+        return left_to_right_diag[0]
 
-    # check diagonals
-    # check columns
-    #    ['X', 'X', 'X'],
-    #    ['O', 'X', 'O'],
-    #    ['O', 'O', 'X'],
-    # how to index -> board[row][column]
-    # idx -> [[0,0], [1,1], [2, 2]]
-    top_left_to_bottom_right = [board[i][i] for i in range(len(board))]
-    if len(set(top_left_to_bottom_right)) == 1:
-        return board[0][0]
-
-    # check diagonals
-    # check columns
-    #    ['X', 'X', 'X'],
-    #    ['O', 'X', 'O'],
-    #    ['O', 'O', 'X'],
-    # how to index -> board[row][column]
-    # idx -> [[0,2], [1,1], [2, 0]]
-    top_right_to_bottom_left = [board[i][len(board)-i-1] for i in range(len(board))]
-    if len(set(top_right_to_bottom_left)) == 1:
-        return board[0][len(board)-1]
-
-    return "Draw"
-
-boards = [
-   [
-        ['X', 'X', 'X'],
-        ['O', 'X', 'O'],
-        ['O', 'O', 'X'],
-    ],
-    [
-        ['X', 'O', 'X'],
-        ['O', 'O', 'O'],
-        ['O', 'X', 'X'],
-    ],
-    [
-        ['O', 'O', 'X'],
-        ['O', 'X', 'O'],
-        ['O', 'O', 'O'],
-    ],
-    [
-        ['X', 'O', 'X'],
-        ['O', 'X', 'O'],
-        ['O', 'X', 'O'],
-    ],
-    [   ['X', 'O', 'X'],
-        ['X', '', ''],
-        ['X', '', ''],
-    ],
-    [   ['X', 'O', 'O'],
-        ['', 'O', ''],
-        ['', 'O', ''],
-    ],
-    [   ['X', '', 'O'],
-        ['', '', 'O'],
-        ['O', '', 'O'],
-    ],
-    [   ['', '', ''],
-        ['', '', ''],
-        ['', '', ''],
-    ],
-    [   ['X', '', 'X'],
-        ['', 'X', 'O'],
-        ['X', 'O', 'X'],
-    ],
-    [   ['X', 'O', 'O'],
-        ['', 'O', 'O'],
-        ['O', 'O', 'X'],
-    ]
-
-]
-
-for board in boards:
-    print(check_winner_pythonic(board))
+    right_to_left_diag = []
+    for idx, row in enumerate(board):
+        board_end_idx = board_length-1
+        right_to_left_diag.append(row[board_end_idx - idx])
+    if len(set(right_to_left_diag)) == 1:
+        return right_to_left_diag[0]
+    
+    all_marks = [mark for row in board for mark in row]
+    if not None in all_marks:
+        return "draw"
+    
+    return None

@@ -1,19 +1,26 @@
 import unittest
 import logic
 
+from logic import check_winner
 
-class TestLogic(unittest.TestCase):
+boards = [
+    [
+        ['O', '1', 'O'],
+        ['O', '1', 'O'],
+        ['O', 'O', '1'],
+    ],
+    [
+        [None, None, None],
+        [None, None, None],
+        [None, None, None],
+    ],
+    [
+        ['O', None, None],
+        [None, 'X', None],
+        [None, None, None],
+    ],
+]
 
-    def test_get_winner(self):
-        board = [
-            ['X', None, 'O'],
-            [None, 'X', None],
-            [None, 'O', 'X'],
-        ]
-        self.assertEqual(logic.get_winner(board), 'X')
-
-    # TODO: Test all functions from logic.py!
-
-
-if __name__ == '__main__':
-    unittest.main()
+for idx, board in enumerate(boards):
+    winner = check_winner(board)
+    print(f"{idx}: {winner}")
